@@ -1,0 +1,5 @@
+{
+    "port": "/dev/ttyACM0",
+    "sketch": "LeftKeyboard/LeftKeyboard.ino",
+    "board": "arduino:avr:leonardo"
+}
