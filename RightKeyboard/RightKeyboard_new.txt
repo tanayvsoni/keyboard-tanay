@@ -34,7 +34,7 @@
 #define BUFFER_SIZE         10
 
 #define DEBOUNCE_DELAY      3
-#define LOOP_DELAY          200
+#define LOOP_DELAY          1
 #define ENCODER_THRESHOLD   1
 
 struct KeyPressReport {
@@ -43,6 +43,7 @@ struct KeyPressReport {
 };
 
 KeyPressReport incomingReport;
+char outgoingReport[BUFFER_SIZE];
 
 const int cols[] = {COL8, COL9, COL10, COL11, COL12, COL13, COL14};
 const int rows[] = {ROW1, ROW2, ROW3, ROW4, ROW5};
@@ -75,11 +76,11 @@ const KeyboardKeycode LAYER2[ROW][COL] = {
 
 KeyboardKeycode keys[ROW][COL];
 
-bool keyboard_type = false;  // True = QWERTY; False = Colemak
-bool layer_type = false;
-
 Encoder myEnc(ENCODER_PIN_A, ENCODER_PIN_B);
-long oldPosition = -999;
+volatile long oldPosition = -999;
+
+volatile bool keyboard_type = false;  // True = QWERTY; False = Colemak
+volatile bool layer_type = false;
 
 void switch_keyboard() {
 
@@ -108,6 +109,7 @@ void switch_layer() {
 }
 
 void scan_matrix(){
+  int index_outgoing = 0;
 
   for (int col = 0; col < COL; col++) {
     digitalWrite(cols[col], LOW);
@@ -118,17 +120,13 @@ void scan_matrix(){
 
       if (debouncers[row][col].fell()) {
 
-        if (keys[row][col] == KEY_RIGHT_CTRL)  {
-          Wire.beginTransmission(SLAVE_ADDRESS);
-          Wire.write('S');
-          Wire.endTransmission();
+        if (keys[row][col] == KEY_RIGHT_CTRL && index_outgoing < BUFFER_SIZE)  {
+          outgoingReport[index_outgoing++] = 'S';
           switch_keyboard();
         }
 
-        if (keys[row][col] == KEY_F14) {
-          Wire.beginTransmission(SLAVE_ADDRESS);
-          Wire.write('F');
-          Wire.endTransmission();
+        if (keys[row][col] == KEY_F14 && index_outgoing < BUFFER_SIZE) {
+          outgoingReport[index_outgoing++] = 'F';
           switch_layer();
         }
 
@@ -137,9 +135,7 @@ void scan_matrix(){
       
       if (debouncers[row][col].rose()) {
         if (keys[row][col] == KEY_F14) {
-          Wire.beginTransmission(SLAVE_ADDRESS);
-          Wire.write('F');
-          Wire.endTransmission();
+          outgoingReport[index_outgoing++] = 'F';
           switch_layer();
         }
 
@@ -148,26 +144,6 @@ void scan_matrix(){
     }
     digitalWrite(cols[col], HIGH);
   }
-}
-
-void processKeyPressReport() {
-  for (int i = 0; i < BUFFER_SIZE; ++i) {
-    if (incomingReport.keysPressed[i] != DUMMY_KEY && incomingReport.keysPressed[i] != 255 && incomingReport.keysPressed[i] != 0) {
-      NKROKeyboard.press(incomingReport.keysPressed[i]);
-    }
-
-    if (incomingReport.keysReleased[i] != DUMMY_KEY && incomingReport.keysReleased[i] != 255 && incomingReport.keysReleased[i] != 0) {
-      NKROKeyboard.release(incomingReport.keysReleased[i]);
-    }
-  }
-
-}
-
-void scan_slave() {
-  Wire.requestFrom(SLAVE_ADDRESS, sizeof(KeyPressReport));
-  Wire.readBytes((char*)&incomingReport, sizeof(KeyPressReport));
-  processKeyPressReport();
-
 }
 
 void scan_encoder() {
@@ -189,6 +165,35 @@ void scan_encoder() {
   }
 }
 
+void processKeyPressReport() {
+  for (int i = 0; i < BUFFER_SIZE; ++i) {
+    if (incomingReport.keysPressed[i] != DUMMY_KEY && incomingReport.keysPressed[i] != 255 && incomingReport.keysPressed[i] != 0) {
+      NKROKeyboard.press(incomingReport.keysPressed[i]);
+    }
+
+    if (incomingReport.keysReleased[i] != DUMMY_KEY && incomingReport.keysReleased[i] != 255 && incomingReport.keysReleased[i] != 0) {
+      NKROKeyboard.release(incomingReport.keysReleased[i]);
+    }
+  }
+
+}
+
+void clearOutgoingReport() {
+  for (size_t i = 0; i < BUFFER_SIZE; i++) outgoingReport[i] = '\0';
+}
+
+void requestEvent() {
+  Wire.write(outgoingReport, BUFFER_SIZE);
+  clearOutgoingReport();
+}
+
+void receiveEvent(int byteCount) {
+  Wire.readBytes((uint8_t*)&incomingReport, sizeof(incomingReport)); 
+  processKeyPressReport();
+  scan_matrix();
+  scan_encoder();
+}
+
 void setup() {
   // Initialize column pins as OUTPUT and set them HIGH
   for (int i = 0; i < COL; i++) {
@@ -207,24 +212,18 @@ void setup() {
   }
 
   switch_keyboard();
-
-  pinMode(SDA_PIN, INPUT_PULLUP);
-  pinMode(SCI_PIN, INPUT_PULLUP);
+  clearOutgoingReport();
 
   pinMode(ENCODER_PIN_A, INPUT_PULLUP);
   pinMode(ENCODER_PIN_B, INPUT_PULLUP);
 
-  Serial.begin(9600);
-
-  Wire.begin();
+  Wire.begin(SLAVE_ADDRESS);
   NKROKeyboard.begin();
   Consumer.begin();
+
+  Wire.onReceive(receiveEvent);
+  Wire.onRequest(requestEvent);
 }
 
 void loop() {
-  
-  scan_matrix();
-  scan_slave();
-  scan_encoder();
-  delayMicroseconds(LOOP_DELAY);
 }

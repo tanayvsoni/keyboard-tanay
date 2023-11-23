@@ -25,6 +25,7 @@
 #define ENCODER_PIN_B       21
 
 #define SLAVE_ADDRESS       0x1
+#define MASTER_ADDRESS      0x2
 
 #define ROW                 5
 #define COL                 7
@@ -37,6 +38,8 @@ struct KeyPressReport {
 };
 
 KeyPressReport outgoingReport;
+
+char incomingReport[BUFFER_SIZE];
 
 const int cols[] = {COL1, COL2, COL3, COL4, COL5, COL6, COL7};
 const int rows[] = {ROW1, ROW2, ROW3, ROW4, ROW5};
@@ -64,10 +67,10 @@ const KeyboardKeycode COLEMAK[ROW][COL] = {
 
 const KeyboardKeycode LAYER2[ROW][COL] = {
   {DUMMY_KEY,            KEY_F1,              KEY_F2,                 KEY_F3,                  KEY_F4,                 KEY_F5,                   DUMMY_KEY},
-  {KEY_TAB,              DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
+  {DUMMY_KEY,            DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
   {KEY_CAPS_LOCK,        DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
   {KEY_RIGHT_SHIFT,      DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
-  {DUMMY_KEY,            DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               KEY_LEFT_ALT,           KEY_SPACE,                DUMMY_KEY}
+  {DUMMY_KEY,            DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               KEY_LEFT_ALT,           DUMMY_KEY,                DUMMY_KEY}
 };
 
 KeyboardKeycode keys[ROW][COL];
@@ -111,10 +114,6 @@ void clearOutgoingReport() {
   }
 }
 
-void sendKeyPressReport() {
-  Wire.write((char*)&outgoingReport, sizeof(KeyPressReport));
-}
-
 void scan_matrix(){
   int index_pressed = 0;
   int index_released = 0;
@@ -124,7 +123,6 @@ void scan_matrix(){
 
     for (int row = 0; row < ROW; row++) {
       debouncers[row][col].update();
-
 
       // Handle Keys
       if (debouncers[row][col].fell() && index_pressed < BUFFER_SIZE) {
@@ -144,19 +142,25 @@ void scan_matrix(){
   outgoingReport.keysReleased[index_released] = DUMMY_KEY;
 }
 
-void requestEvent() {
-  scan_matrix();
-  sendKeyPressReport();
-  clearOutgoingReport();
+void requestSlaveReport() {
+
+  Wire.requestFrom(SLAVE_ADDRESS, BUFFER_SIZE);
+
+  if (Wire.available()) {
+    Wire.readBytes((char*)&incomingReport, BUFFER_SIZE);
+    for (size_t i = 0; i < BUFFER_SIZE; i++) {
+      if (incomingReport[i] == '\0') break;
+      if (incomingReport[i] == 'S') switch_keyboard();
+      if (incomingReport[i] == 'F') switch_layer();
+    }
+  }
+
 }
 
-void receiveEvent(int howMany) {
-  while (Wire.available()) { // loop through all but the last byte
-    char c = Wire.read(); // receive byte as a character
-    
-    if (c == 'S') switch_keyboard();
-    if (c == 'F') switch_layer();
-  }
+void scan_slave() {
+  Wire.beginTransmission(SLAVE_ADDRESS);
+  Wire.write((char*)&outgoingReport, sizeof(KeyPressReport));
+  Wire.endTransmission();
 }
 
 void setup() {
@@ -176,11 +180,8 @@ void setup() {
     }
   }
 
-  // Clear outgoingReport
-  for (size_t i = 0; i < BUFFER_SIZE; i++) {
-    outgoingReport.keysPressed[i] = DUMMY_KEY;
-    outgoingReport.keysReleased[i] = DUMMY_KEY;
-  }
+  pinMode(SDA_PIN, INPUT_PULLUP);
+  pinMode(SCI_PIN, INPUT_PULLUP);
 
   pinMode(ENCODER_PIN_A, INPUT_PULLUP);
   pinMode(ENCODER_PIN_B, INPUT_PULLUP);
@@ -189,11 +190,14 @@ void setup() {
   clearOutgoingReport();
 
   Serial.begin(9600);
-
-  Wire.begin(SLAVE_ADDRESS);
-  Wire.onRequest(requestEvent);
-  Wire.onReceive(receiveEvent);
+  Wire.begin();
 }
 
 void loop() {
+  scan_matrix();
+  scan_slave();
+  delayMicroseconds(450);
+  clearOutgoingReport();
+  requestSlaveReport();
+  delayMicroseconds(300);
 }
