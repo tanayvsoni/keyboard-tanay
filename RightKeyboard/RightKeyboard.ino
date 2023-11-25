@@ -68,8 +68,8 @@ const KeyboardKeycode COLEMAK[ROW][COL] = {
 const KeyboardKeycode LAYER2[ROW][COL] = {
   {DUMMY_KEY,            KEY_F6,                KEY_F7,              KEY_F8,                  KEY_F9,                 KEY_F10,                  DUMMY_KEY},
   {DUMMY_KEY,            DUMMY_KEY,             DUMMY_KEY,           KEY_UP_ARROW,            DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
-  {DUMMY_KEY,            KEY_H,                 KEY_LEFT_ARROW,      KEY_DOWN_ARROW,          KEY_RIGHT_ARROW,        DUMMY_KEY,                KEY_RETURN},
-  {DUMMY_KEY,            DUMMY_KEY,             KEY_END,             DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
+  {DUMMY_KEY,            KEY_END,               KEY_LEFT_ARROW,      KEY_DOWN_ARROW,          KEY_RIGHT_ARROW,        KEY_MUTE,                 KEY_RETURN},
+  {DUMMY_KEY,            DUMMY_KEY,             DUMMY_KEY,           DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
   {KEY_F14,              KEY_BACKSPACE,         KEY_F11,             DUMMY_KEY,               DUMMY_KEY,              KEY_F12,                  KEY_RIGHT_CTRL}
 };
 
@@ -130,6 +130,10 @@ void scan_matrix(){
           Wire.write('F');
           Wire.endTransmission();
           switch_layer();
+        }
+
+        if (keys[row][col] == KEY_MUTE) {
+          Consumer.write(MEDIA_VOL_MUTE);
         }
 
         NKROKeyboard.press(keys[row][col]);
