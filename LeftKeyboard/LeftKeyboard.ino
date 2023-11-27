@@ -51,7 +51,7 @@ const KeyboardKeycode QWERTY[ROW][COL] = {
   {KEY_TAB,             KEY_Q,              KEY_W,              KEY_E,                  KEY_R,              KEY_T,          KEY_0},
   {KEY_ESC,             KEY_A,              KEY_S,              KEY_D,                  KEY_F,              KEY_G,          KEY_0},
   {KEY_LEFT_SHIFT,      KEY_Z,              KEY_X,              KEY_C,                  KEY_V,              KEY_B,          KEY_0},
-  {KEY_LEFT_CTRL,       KEY_LEFT_GUI,       KEY_LEFT_BRACE,     KEY_RIGHT_BRACE,        KEY_LEFT_ALT,       KEY_SPACE,     KEY_QUOTE}
+  {KEY_LEFT_CTRL,       KEY_LEFT_GUI,       KEY_INSERT,         KEY_DELETE,             KEY_LEFT_ALT,       KEY_SPACE,     KEY_QUOTE}
 };
 
 const KeyboardKeycode COLEMAK[ROW][COL] = {
@@ -59,15 +59,15 @@ const KeyboardKeycode COLEMAK[ROW][COL] = {
   {KEY_TAB,             KEY_Q,              KEY_W,              KEY_F,                  KEY_P,              KEY_G,          KEY_0},
   {KEY_ESC,             KEY_A,              KEY_R,              KEY_S,                  KEY_T,              KEY_D,          KEY_0},
   {KEY_LEFT_SHIFT,      KEY_Z,              KEY_X,              KEY_C,                  KEY_V,              KEY_B,          KEY_0},
-  {KEY_LEFT_CTRL,       KEY_LEFT_GUI,       KEY_LEFT_BRACE,     KEY_RIGHT_BRACE,        KEY_LEFT_ALT,       KEY_SPACE,      KEY_QUOTE}
+  {KEY_LEFT_CTRL,       KEY_LEFT_GUI,       KEY_INSERT,         KEY_DELETE,             KEY_LEFT_ALT,       KEY_SPACE,      KEY_QUOTE}
 };
 
 const KeyboardKeycode LAYER2[ROW][COL] = {
   {KEY_CAPS_LOCK,        KEY_F1,              KEY_F2,                 KEY_F3,                  KEY_F4,                 KEY_F5,                   DUMMY_KEY},
   {KEY_TAB,              DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
-  {KEY_ESC,              DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
+  {KEY_ESC,              DUMMY_KEY,           DUMMY_KEY,              KEY_LEFT_BRACE,          KEY_RIGHT_BRACE,        DUMMY_KEY,                DUMMY_KEY},
   {KEY_RIGHT_SHIFT,      DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
-  {DUMMY_KEY,            DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               KEY_LEFT_ALT,           KEY_SPACE,                DUMMY_KEY}
+  {DUMMY_KEY,            DUMMY_KEY,           KEY_INSERT,             KEY_DELETE,              KEY_LEFT_ALT,           KEY_SPACE,                DUMMY_KEY}
 };
 
 KeyboardKeycode keys[ROW][COL];
