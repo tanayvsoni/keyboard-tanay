@@ -63,9 +63,9 @@ const KeyboardKeycode COLEMAK[ROW][COL] = {
 };
 
 const KeyboardKeycode LAYER2[ROW][COL] = {
-  {DUMMY_KEY,            KEY_F1,              KEY_F2,                 KEY_F3,                  KEY_F4,                 KEY_F5,                   DUMMY_KEY},
+  {KEY_CAPS_LOCK,        KEY_F1,              KEY_F2,                 KEY_F3,                  KEY_F4,                 KEY_F5,                   DUMMY_KEY},
   {KEY_TAB,              DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
-  {KEY_CAPS_LOCK,        DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
+  {KEY_ESC,              DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
   {KEY_RIGHT_SHIFT,      DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
   {DUMMY_KEY,            DUMMY_KEY,           DUMMY_KEY,              DUMMY_KEY,               KEY_LEFT_ALT,           KEY_SPACE,                DUMMY_KEY}
 };
