@@ -54,7 +54,7 @@ const KeyboardKeycode QWERTY[ROW][COL] = {
   {DUMMY_KEY,                KEY_Y,              KEY_U,         KEY_I,              KEY_O,              KEY_P,                KEY_EQUAL},
   {DUMMY_KEY,                KEY_H,              KEY_J,         KEY_K,              KEY_L,              KEY_SEMICOLON,        KEY_RETURN},
   {DUMMY_KEY,                KEY_N,              KEY_M,         KEY_COMMA,          KEY_PERIOD,         KEY_SLASH,            KEY_BACKSLASH},
-  {KEY_F14,                  KEY_BACKSPACE,      KEY_F11,       KEY_INSERT,         KEY_DELETE,         KEY_F12,              KEY_RIGHT_CTRL}
+  {KEY_F14,                  KEY_BACKSPACE,      KEY_F11,       KEY_INSERT,            KEY_DELETE,         KEY_F12,           KEY_RIGHT_CTRL}
 };
 
 const KeyboardKeycode COLEMAK[ROW][COL] = {
@@ -65,18 +65,18 @@ const KeyboardKeycode COLEMAK[ROW][COL] = {
   {KEY_F14,                  KEY_BACKSPACE,      KEY_F11,       KEY_INSERT,         KEY_DELETE,         KEY_F12,              KEY_RIGHT_CTRL}
 };
 
-const KeyboardKeycode LAYER2[ROW][COL] = {
+const KeyboardKeycode PUNCUATION_LAYER[ROW][COL] = {
   {DUMMY_KEY,            KEY_F6,                KEY_F7,              KEY_F8,                  KEY_F9,                 KEY_F10,                  DUMMY_KEY},
-  {DUMMY_KEY,            DUMMY_KEY,             DUMMY_KEY,           KEY_UP_ARROW,            DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
-  {DUMMY_KEY,            KEY_END,               KEY_LEFT_ARROW,      KEY_DOWN_ARROW,          KEY_RIGHT_ARROW,        KEY_MUTE,                 KEY_RETURN},
-  {DUMMY_KEY,            DUMMY_KEY,             DUMMY_KEY,           DUMMY_KEY,               DUMMY_KEY,              DUMMY_KEY,                DUMMY_KEY},
-  {KEY_F14,              KEY_BACKSPACE,         KEY_F11,             DUMMY_KEY,               DUMMY_KEY,              KEY_F12,                  KEY_RIGHT_CTRL}
+  {DUMMY_KEY,            DUMMY_KEY,             KEY_MINUS,           KEY_UP_ARROW,            KEY_LEFT_BRACE,         KEY_RIGHT_BRACE,          DUMMY_KEY},
+  {DUMMY_KEY,            KEY_SEMICOLON,         KEY_LEFT_ARROW,      KEY_DOWN_ARROW,          KEY_RIGHT_ARROW,        KEY_END,                  KEY_RETURN},
+  {DUMMY_KEY,            KEY_BACKSLASH,         KEY_EQUAL,           KEY_COMMA,               KEY_PERIOD,             KEY_SLASH,                DUMMY_KEY},
+  {KEY_F14,              KEY_BACKSPACE,         KEY_MUTE,            KEY_F15,                 DUMMY_KEY,              KEY_F12,                  KEY_RIGHT_CTRL}
 };
 
 KeyboardKeycode keys[ROW][COL];
 
-bool keyboard_type = false;  // True = QWERTY; False = Colemak
-bool layer_type = false;
+bool keyboard_type = false;  // True = QWERTY; False = Colemaks
+bool puncuation_layer = false;
 
 Encoder myEnc(ENCODER_PIN_A, ENCODER_PIN_B);
 long oldPosition = -999;
@@ -92,19 +92,24 @@ void switch_keyboard() {
   keyboard_type = !keyboard_type;
 }
 
-void switch_layer() {
+void switch_punLayer() {
 
   for(size_t i = 0; i < ROW; i++) {
     for(size_t j = 0; j < COL; j++) {
-      if (!layer_type) keys[i][j] = LAYER2[i][j];
-      else if (keyboard_type) 
+      NKROKeyboard.release(keys[i][j]);
+      if (!puncuation_layer) {
+        keys[i][j] = PUNCUATION_LAYER[i][j];
+      }
+      else if (keyboard_type) {
         keys[i][j] = COLEMAK[i][j];
-      else if (!keyboard_type)
+      }
+      else if (!keyboard_type) {
         keys[i][j] = QWERTY[i][j];
+      }
     }
   }
 
-  layer_type = !layer_type;
+  puncuation_layer = !puncuation_layer;
 }
 
 void scan_matrix(){
@@ -118,25 +123,33 @@ void scan_matrix(){
 
       if (debouncers[row][col].fell()) {
 
-        if (keys[row][col] == KEY_RIGHT_CTRL)  {
+        if (keys[row][col] == KEY_F15)  {
           Wire.beginTransmission(SLAVE_ADDRESS);
           Wire.write('S');
           Wire.endTransmission();
           switch_keyboard();
         }
 
-        if (keys[row][col] == KEY_F14) {
+        else if (keys[row][col] == KEY_F14) {
           Wire.beginTransmission(SLAVE_ADDRESS);
           Wire.write('F');
           Wire.endTransmission();
-          switch_layer();
+          switch_punLayer();
         }
 
-        if (keys[row][col] == KEY_MUTE) {
+        else if (keys[row][col] == KEY_F13) {
+          Wire.beginTransmission(SLAVE_ADDRESS);
+          Wire.write('N');
+          Wire.endTransmission();
+        }
+
+        else if (keys[row][col] == KEY_MUTE) {
           Consumer.write(MEDIA_VOL_MUTE);
         }
 
-        NKROKeyboard.press(keys[row][col]);
+        else if (keys[row][col] != DUMMY_KEY) {
+          NKROKeyboard.press(keys[row][col]);
+        }
       }
       
       if (debouncers[row][col].rose()) {
@@ -144,10 +157,17 @@ void scan_matrix(){
           Wire.beginTransmission(SLAVE_ADDRESS);
           Wire.write('F');
           Wire.endTransmission();
-          switch_layer();
+          switch_punLayer();
         }
 
-        NKROKeyboard.release(keys[row][col]);
+        else if (keys[row][col] == KEY_F13) {
+          Wire.beginTransmission(SLAVE_ADDRESS);
+          Wire.write('N');
+          Wire.endTransmission();
+        }
+
+        else if (keys[row][col] != DUMMY_KEY) 
+          NKROKeyboard.release(keys[row][col]);
       }
     }
     digitalWrite(cols[col], HIGH);
@@ -171,7 +191,6 @@ void scan_slave() {
   Wire.requestFrom(SLAVE_ADDRESS, sizeof(KeyPressReport));
   Wire.readBytes((char*)&incomingReport, sizeof(KeyPressReport));
   processKeyPressReport();
-
 }
 
 void scan_encoder() {
