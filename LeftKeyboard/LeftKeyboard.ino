@@ -65,7 +65,7 @@ const KeyboardKeycode PUNCUATION_LAYER[ROW][COL] = {
     {KEY_TAB,         KEY_7,        KEY_8,        KEY_9,          KEY_0,            DUMMY_KEY,          DUMMY_KEY},
     {KEY_ESC,         KEY_4,        KEY_5,        KEY_6,          KEY_LEFT_BRACE,   KEY_RIGHT_BRACE,    DUMMY_KEY},
     {KEY_LEFT_SHIFT,  KEY_1,        KEY_2,        KEY_3,          DUMMY_KEY,        DUMMY_KEY,          DUMMY_KEY},
-    {KEY_LEFT_CTRL,   DUMMY_KEY,    DUMMY_KEY,    DUMMY_KEY,      KEY_LEFT_ALT,     KEY_SPACE,          DUMMY_KEY}};
+    {KEY_LEFT_CTRL,   KEY_PERIOD,   KEY_0,        KEY_PERIOD,     KEY_LEFT_ALT,     KEY_SPACE,      DUMMY_KEY}};
 
 KeyboardKeycode keys[ROW][COL];
 

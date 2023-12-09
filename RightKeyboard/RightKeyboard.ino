@@ -67,7 +67,7 @@ const KeyboardKeycode COLEMAK[ROW][COL] = {
 
 const KeyboardKeycode PUNCUATION_LAYER[ROW][COL] = {
   {DUMMY_KEY,            KEY_F6,                KEY_F7,              KEY_F8,                  KEY_F9,                 KEY_F10,                  DUMMY_KEY},
-  {DUMMY_KEY,            DUMMY_KEY,             KEY_MINUS,           KEY_UP_ARROW,            KEY_LEFT_BRACE,         KEY_RIGHT_BRACE,          DUMMY_KEY},
+  {DUMMY_KEY,            KEY_BACKSPACE,         KEY_MINUS,           KEY_UP_ARROW,            KEY_LEFT_BRACE,         KEY_RIGHT_BRACE,          DUMMY_KEY},
   {DUMMY_KEY,            KEY_SEMICOLON,         KEY_LEFT_ARROW,      KEY_DOWN_ARROW,          KEY_RIGHT_ARROW,        KEY_END,                  KEY_RETURN},
   {DUMMY_KEY,            KEY_BACKSLASH,         KEY_EQUAL,           KEY_COMMA,               KEY_PERIOD,             KEY_SLASH,                DUMMY_KEY},
   {KEY_F14,              KEY_BACKSPACE,         KEY_MUTE,            KEY_F15,                 DUMMY_KEY,              KEY_F12,                  KEY_RIGHT_CTRL}
