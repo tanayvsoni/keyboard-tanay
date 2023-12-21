@@ -50,7 +50,7 @@ const KeyboardKeycode QWERTY[ROW][COL] = {
     {KEY_TILDE,       KEY_1,        KEY_2,      KEY_3,        KEY_4,        KEY_5,        DUMMY_KEY},
     {KEY_TAB,         KEY_Q,        KEY_W,      KEY_E,        KEY_R,        KEY_T,        DUMMY_KEY},
     {KEY_ESC,         KEY_A,        KEY_S,      KEY_D,        KEY_F,        KEY_G,        DUMMY_KEY},
-    {KEY_LEFT_SHIFT,  KEY_Z,        KEY_X,      KEY_C,        KEY_V,        KEY_B,        DUMMY_KEY},
+    {KEY_LEFT_SHIFT,  KEY_Z,        KEY_X,      KEY_C,        KEY_V,        KEY_G,        DUMMY_KEY},
     {KEY_LEFT_CTRL,   KEY_LEFT_GUI, KEY_INSERT, KEY_DELETE,   KEY_LEFT_ALT, KEY_SPACE,    KEY_QUOTE}};
 
 const KeyboardKeycode COLEMAK[ROW][COL] = {
