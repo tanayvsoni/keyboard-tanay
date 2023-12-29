@@ -29,7 +29,7 @@
 #define ROW 5
 #define COL 7
 
-#define BUFFER_SIZE 10
+#define BUFFER_SIZE 35
 
 struct KeyPressReport {
     KeyboardKeycode keysPressed[BUFFER_SIZE];
@@ -75,6 +75,9 @@ KeyboardKeycode keys[ROW][COL];
 bool layer_type = false;
 bool puncuation_layer = false;
 
+int index_pressed = 0;
+int index_released = 0;
+
 void switch_keyboard() {
 
     for (size_t i = 0; i < ROW; i++) {
@@ -92,7 +95,9 @@ void switch_punLayer() {
 
     for (size_t i = 0; i < ROW; i++) {
         for (size_t j = 0; j < COL; j++) {
-            NKROKeyboard.release(keys[i][j]);
+            if (keys[i][j] != PUNCUATION_LAYER[i][j]) {
+                outgoingReport.keysReleased[index_released++] = keys[i][j];
+            }
             if (!layer_type) {
                 keys[i][j] = PUNCUATION_LAYER[i][j];
             } else if (puncuation_layer) {
@@ -104,6 +109,8 @@ void switch_punLayer() {
     }
 
     layer_type = !layer_type;
+
+
 }
 
 void clearOutgoingReport() {
@@ -118,8 +125,6 @@ void sendKeyPressReport() {
 }
 
 void scan_matrix() {
-    int index_pressed = 0;
-    int index_released = 0;
 
     for (int col = 0; col < COL; col++) {
         digitalWrite(cols[col], LOW);
@@ -145,6 +150,10 @@ void scan_matrix() {
 
 void requestEvent() {
     scan_matrix();
+
+    index_pressed = 0;
+    index_released = 0;
+
     sendKeyPressReport();
     clearOutgoingReport();
 }

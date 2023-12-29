@@ -31,7 +31,7 @@
 #define ROW                 5
 #define COL                 7
 
-#define BUFFER_SIZE         10
+#define BUFFER_SIZE         35
 
 #define DEBOUNCE_DELAY      3
 #define LOOP_DELAY          200
