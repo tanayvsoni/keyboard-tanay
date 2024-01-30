@@ -50,22 +50,22 @@ const KeyboardKeycode QWERTY[ROW][COL] = {
     {KEY_TILDE,       KEY_1,        KEY_2,      KEY_3,        KEY_4,        KEY_5,        DUMMY_KEY},
     {KEY_TAB,         KEY_Q,        KEY_W,      KEY_E,        KEY_R,        KEY_T,        DUMMY_KEY},
     {KEY_ESC,         KEY_A,        KEY_S,      KEY_D,        KEY_F,        KEY_G,        DUMMY_KEY},
-    {KEY_LEFT_SHIFT,  KEY_Z,        KEY_X,      KEY_C,        KEY_V,        KEY_G,        DUMMY_KEY},
-    {KEY_LEFT_CTRL,   KEY_LEFT_GUI, KEY_INSERT, KEY_DELETE,   KEY_LEFT_ALT, KEY_SPACE,    KEY_QUOTE}};
+    {KEY_LEFT_SHIFT,  KEY_Z,        KEY_X,      KEY_C,        KEY_V,        KEY_B,        DUMMY_KEY},
+    {KEY_LEFT_CTRL,   KEY_LEFT_ALT, KEY_INSERT, KEY_DELETE,   KEY_LEFT_GUI, KEY_SPACE,    KEY_QUOTE}};
 
 const KeyboardKeycode COLEMAK[ROW][COL] = {
     {KEY_TILDE,       KEY_1,        KEY_2,      KEY_3,        KEY_4,        KEY_5,      DUMMY_KEY},
     {KEY_TAB,         KEY_Q,        KEY_W,      KEY_F,        KEY_P,        KEY_G,      DUMMY_KEY},
     {KEY_ESC,         KEY_A,        KEY_R,      KEY_S,        KEY_T,        KEY_D,      DUMMY_KEY},
     {KEY_LEFT_SHIFT,  KEY_Z,        KEY_X,      KEY_C,        KEY_V,        KEY_B,      DUMMY_KEY},
-    {KEY_LEFT_CTRL,   KEY_LEFT_GUI, KEY_INSERT, KEY_DELETE,   KEY_LEFT_ALT, KEY_SPACE,  KEY_QUOTE}};
+    {KEY_LEFT_CTRL,   KEY_LEFT_ALT, KEY_INSERT, KEY_DELETE,   KEY_LEFT_GUI, KEY_SPACE,  KEY_QUOTE}};
 
 const KeyboardKeycode PUNCUATION_LAYER[ROW][COL] = {
     {KEY_CAPS_LOCK,   KEY_F1,       KEY_F2,       KEY_F3,         KEY_F4,           KEY_F5,             DUMMY_KEY},
     {KEY_TAB,         KEY_7,        KEY_8,        KEY_9,          KEY_0,            DUMMY_KEY,          DUMMY_KEY},
     {KEY_ESC,         KEY_4,        KEY_5,        KEY_6,          KEY_LEFT_BRACE,   KEY_RIGHT_BRACE,    DUMMY_KEY},
-    {KEY_LEFT_SHIFT,  KEY_1,        KEY_2,        KEY_3,          DUMMY_KEY,        DUMMY_KEY,          DUMMY_KEY},
-    {KEY_LEFT_CTRL,   KEY_PERIOD,   KEY_0,        KEY_PERIOD,     KEY_LEFT_ALT,     KEY_SPACE,      DUMMY_KEY}};
+    {KEY_LEFT_SHIFT,  KEY_1,        KEY_2,        KEY_3,          KEY_PERIOD,       DUMMY_KEY,          DUMMY_KEY},
+    {KEY_LEFT_CTRL,   KEY_LEFT_ALT, KEY_0,        KEY_0,          KEY_LEFT_GUI,     KEY_SPACE,          DUMMY_KEY}};
 
 KeyboardKeycode keys[ROW][COL];
 
@@ -95,7 +95,7 @@ void switch_punLayer() {
 
     for (size_t i = 0; i < ROW; i++) {
         for (size_t j = 0; j < COL; j++) {
-            if (keys[i][j] != PUNCUATION_LAYER[i][j]) {
+            if (keys[i][j] != KEY_LEFT_SHIFT && keys[i][j] != KEY_LEFT_CTRL && keys[i][j] != KEY_LEFT_ALT) {
                 outgoingReport.keysReleased[index_released++] = keys[i][j];
             }
             if (!layer_type) {
