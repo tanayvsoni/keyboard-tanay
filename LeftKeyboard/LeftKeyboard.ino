@@ -95,7 +95,7 @@ void switch_punLayer() {
 
     for (size_t i = 0; i < ROW; i++) {
         for (size_t j = 0; j < COL; j++) {
-            if (keys[i][j] != KEY_LEFT_SHIFT && keys[i][j] != KEY_LEFT_CTRL && keys[i][j] != KEY_LEFT_ALT) {
+            if (keys[i][j] != KEY_LEFT_SHIFT && keys[i][j] != KEY_LEFT_CTRL && keys[i][j] != KEY_LEFT_GUI) {
                 outgoingReport.keysReleased[index_released++] = keys[i][j];
             }
             if (!layer_type) {

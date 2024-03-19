@@ -54,7 +54,7 @@ const KeyboardKeycode QWERTY[ROW][COL] = {
   {DUMMY_KEY,                KEY_Y,              KEY_U,         KEY_I,              KEY_O,              KEY_P,                KEY_EQUAL},
   {DUMMY_KEY,                KEY_H,              KEY_J,         KEY_K,              KEY_L,              KEY_SEMICOLON,        KEY_RETURN},
   {DUMMY_KEY,                KEY_N,              KEY_M,         KEY_COMMA,          KEY_PERIOD,         KEY_SLASH,            KEY_BACKSLASH},
-  {KEY_F14,                  KEY_BACKSPACE,      KEY_BACKSPACE, KEY_F11,            KEY_F12,            KEY_F12,              KEY_RIGHT_CTRL}
+  {KEY_F14,                  KEY_BACKSPACE,      KEY_DELETE,    KEY_F11,            KEY_F12,            KEY_F12,              KEY_RIGHT_CTRL}
 };
 
 const KeyboardKeycode COLEMAK[ROW][COL] = {
@@ -62,15 +62,15 @@ const KeyboardKeycode COLEMAK[ROW][COL] = {
   {DUMMY_KEY,                KEY_J,              KEY_L,         KEY_U,              KEY_Y,              KEY_SEMICOLON,        KEY_EQUAL},
   {DUMMY_KEY,                KEY_H,              KEY_N,         KEY_E,              KEY_I,              KEY_O,                KEY_RETURN},
   {DUMMY_KEY,                KEY_K,              KEY_M,         KEY_COMMA,          KEY_PERIOD,         KEY_SLASH,            KEY_BACKSLASH},
-  {KEY_F14,                  KEY_BACKSPACE,      KEY_BACKSPACE, KEY_F11,            KEY_F12,            KEY_MUTE,             KEY_RIGHT_CTRL}
+  {KEY_F14,                  KEY_BACKSPACE,      KEY_DELETE,    KEY_F11,            KEY_F12,            KEY_F15,              KEY_RIGHT_CTRL}
 };
 
 const KeyboardKeycode PUNCUATION_LAYER[ROW][COL] = {
   {DUMMY_KEY,            KEY_F6,                KEY_F7,              KEY_F8,                  KEY_F9,                 KEY_F10,                  KEY_BACKSPACE},
   {DUMMY_KEY,            KEY_H,                 KEY_MINUS,           KEY_UP_ARROW,            DUMMY_KEY,              DUMMY_KEY,                KEY_PERIOD},
   {DUMMY_KEY,            KEY_SEMICOLON,         KEY_LEFT_ARROW,      KEY_DOWN_ARROW,          KEY_RIGHT_ARROW,        KEY_END,                  KEY_RETURN},
-  {DUMMY_KEY,            KEY_BACKSLASH,         KEY_EQUAL,           KEY_COMMA,               KEY_PERIOD,             KEY_SLASH,                KEY_BACKSLASH},
-  {KEY_F14,              KEY_BACKSPACE,         KEY_BACKSPACE,       DUMMY_KEY,               DUMMY_KEY,              KEY_F15,                  KEY_RIGHT_CTRL}
+  {DUMMY_KEY,            KEY_BACKSLASH,         KEY_EQUAL,           KEY_PAGE_UP,             KEY_PAGE_DOWN,          KEY_SLASH,                KEY_BACKSLASH},
+  {KEY_F14,              KEY_BACKSPACE,         KEY_DELETE,          KEY_MUTE,                DUMMY_KEY,              DUMMY_KEY,                KEY_RIGHT_CTRL}
 };
 
 KeyboardKeycode keys[ROW][COL];
